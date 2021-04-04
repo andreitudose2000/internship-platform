@@ -11,7 +11,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws CloneNotSupportedException,
-            EmployerNotFoundException, StudentNotFoundException, JobNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            EmployerNotFoundException, StudentNotFoundException, JobNotFoundException {
 
         InternshipService service = InternshipService.getInstance();
 

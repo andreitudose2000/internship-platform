@@ -153,8 +153,4 @@ public class InternshipService
         student.update(profileBuilder.build());
     }
 
-
-
-
-
 }
