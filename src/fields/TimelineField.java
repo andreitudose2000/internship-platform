@@ -2,7 +2,7 @@ package fields;
 
 import java.time.YearMonth;
 
-abstract class TimelineField implements Comparable<TimelineField> {
+abstract class TimelineField implements Comparable<TimelineField>, Cloneable {
     private YearMonth startDate;
     private YearMonth finishDate;
     private String description;
@@ -32,6 +32,11 @@ abstract class TimelineField implements Comparable<TimelineField> {
             return comp;
         }
         return this.finishDate.compareTo(o.finishDate);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
 

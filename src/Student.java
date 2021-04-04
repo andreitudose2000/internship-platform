@@ -7,16 +7,13 @@ import fields.ProjectField;
 import java.time.YearMonth;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.*;
 
 //Clasa modeleaza un profil de utilizator student care contine
 //campuri atat obligatorii cat si neobligatorii
 //ca sa treaca validarea, cele obligatorii trebuie sa nu fie null
-public class StudentProfile implements Observer {
+public class Student implements Observer {
     public void updateObserver(String message){
         inbox.add(new InboxMessage(message));
     }
@@ -39,18 +36,21 @@ public class StudentProfile implements Observer {
     private ArrayList<String> programmingLanugages;
     private ArrayList<String> foreignLanguages;
     private ArrayList<String> preferredClasses;
-    private Set<EducationField> educationFields;
-    private Set<ExperienceField> experienceFields;
-    private Set<ProjectField> projectFields;
+    private Set<EducationField> educationFields = new TreeSet<>();
+    private Set<ExperienceField> experienceFields = new TreeSet<>();
+    private Set<ProjectField> projectFields = new TreeSet<>();
 
     private List<InboxMessage> inbox = new ArrayList<>();
 
-    private StudentProfile(ProfileBuilder profileBuilder){
+    private Student(ProfileBuilder profileBuilder){
         this.firstName = profileBuilder.firstName;
         this.lastName = profileBuilder.lastName;
         this.birthday = profileBuilder.birthday;
         this.university = profileBuilder.university;
         this.headline = profileBuilder.headline;
+        this.educationFields = profileBuilder.educationFields;
+        this.experienceFields = profileBuilder.experienceFields;
+        this.projectFields = profileBuilder.projectFields;
     }
 
     public void applyForJob(Job job) {
@@ -73,8 +73,19 @@ public class StudentProfile implements Observer {
         private String headline;
         private Set<EducationField> educationFields = new TreeSet<>();
         private Set<ExperienceField> experienceFields = new TreeSet<>();
-        private Set<ProjectField> projectFields;
-        private int[] phoneNumber = new int[10];
+        private Set<ProjectField> projectFields = new TreeSet<>();
+        private char[] phoneNumber = new char[10];
+
+        public ProfileBuilder(Student student) throws CloneNotSupportedException {
+            this.firstName = student.firstName;
+            this.lastName = student.lastName;
+            this.birthday = student.birthday;
+            this.university = student.university;
+            this.headline = student.headline;
+            this.educationFields = student.educationFields;
+            this.experienceFields = student.experienceFields;
+            this.projectFields = student.projectFields;
+        }
 
         public ProfileBuilder(String firstName, String lastName, String birthday, String email) throws IncorrectEmailException {
             this.firstName = firstName;
@@ -112,8 +123,7 @@ public class StudentProfile implements Observer {
 
 
         public ProfileBuilder addEducationField(YearMonth startDate, YearMonth finishDate, String description, String institutionName, String specializationName){
-            EducationField a = new EducationField(startDate, finishDate, description, institutionName, specializationName);
-            this.educationFields.add(a);
+            this.educationFields.add(new EducationField(startDate, finishDate, description, institutionName, specializationName));
             return this;
         }
 
@@ -122,20 +132,20 @@ public class StudentProfile implements Observer {
             return this;
         }
 
-        public ProfileBuilder addProjectField(YearMonth startDate, YearMonth finishDate, String description, String positionName, String institutionName){
-            this.experienceFields.add(new ExperienceField(startDate, finishDate, description, positionName, institutionName));
+        public ProfileBuilder addProjectField(YearMonth startDate, YearMonth finishDate, String description, String projectName){
+            this.projectFields.add(new ProjectField(startDate, finishDate, description, projectName));
             return this;
         }
 
-        public StudentProfile build(){
-            return new StudentProfile(this);
+        public Student build(){
+            return new Student(this);
         }
 
     }
 
     @Override
     public String toString() {
-        return "StudentProfile{" +
+        return "Student{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", university='" + university + '\'' +
@@ -152,5 +162,16 @@ public class StudentProfile implements Observer {
 
     public LocalDate getBirthday() {
         return birthday;
+    }
+
+    public void update(Student student) {
+        this.firstName = student.firstName;
+        this.lastName = student.lastName;
+        this.birthday = student.birthday;
+        this.university = student.university;
+        this.headline = student.headline;
+        this.educationFields = student.educationFields;
+        this.experienceFields = student.experienceFields;
+        this.projectFields = student.projectFields;
     }
 }

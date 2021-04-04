@@ -19,5 +19,10 @@ public class ExperienceField extends TimelineField {
     public String getInstitutionName() {
         return institutionName;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }
 

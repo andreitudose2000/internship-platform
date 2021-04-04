@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Job implements Observable {
+public class Job implements Observable, Cloneable {
     private boolean jobActive;
     private String jobTitle;
     private int periodInMonths;
@@ -71,5 +71,10 @@ public class Job implements Observable {
     public void setSalary(int salary) {
         this.salary = salary;
         this.notifyProfiles();
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return (Job) super.clone();
     }
 }

@@ -13,4 +13,9 @@ public class ProjectField extends TimelineField {
     public String getProjectName() {
         return projectName;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

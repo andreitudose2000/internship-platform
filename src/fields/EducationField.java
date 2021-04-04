@@ -18,4 +18,9 @@ public class EducationField extends TimelineField {
     public String getSpecializationName() {
         return specializationName;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

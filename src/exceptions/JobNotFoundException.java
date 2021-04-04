@@ -1,7 +1,7 @@
 package exceptions;
 
-public class EmployerNotFoundException extends Exception {
-    public EmployerNotFoundException(String errorMessage) {
+public class JobNotFoundException extends Exception {
+    public JobNotFoundException(String errorMessage) {
         super(errorMessage);
     }
 }
