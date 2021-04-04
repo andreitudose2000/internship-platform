@@ -17,7 +17,6 @@ import java.util.regex.*;
 //campuri atat obligatorii cat si neobligatorii
 //ca sa treaca validarea, cele obligatorii trebuie sa nu fie null
 public class StudentProfile implements Observer {
-
     public void updateObserver(String message){
         inbox.add(new InboxMessage(message));
     }
@@ -58,7 +57,7 @@ public class StudentProfile implements Observer {
         job.subscribe(this);
     }
 
-    public void removeJobApplicaion(Job job) {
+    public void removeJobApplication(Job job) {
         job.unsubscribe(this);
     }
 
@@ -132,5 +131,26 @@ public class StudentProfile implements Observer {
             return new StudentProfile(this);
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "StudentProfile{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", university='" + university + '\'' +
+                '}';
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
     }
 }
