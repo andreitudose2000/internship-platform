@@ -10,6 +10,12 @@ public class Job implements Observable, Cloneable {
     private List<String> jobRequirements = new ArrayList<>();
     private List<String> jobAttributes = new ArrayList<>();
 
+    public Job() {
+        this.jobActive = false;
+        this.jobTitle = "";
+        this.periodInMonths = this.salary = 0;
+    }
+
     public Job(String jobTitle, int periodInMonths, int salary){
         jobActive = true;
         this.jobTitle = jobTitle;

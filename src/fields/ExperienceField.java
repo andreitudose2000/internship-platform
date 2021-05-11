@@ -24,5 +24,21 @@ public class ExperienceField extends TimelineField {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return  "ExperienceField{" +
+                super.toString() +
+                ", positionName='" + positionName + '\'' +
+                ", institutionName='" + institutionName + '\'' +
+                '}';
+    }
+
+    @Override
+    public String convertToCSV() {
+        return super.convertToCSV() + ',' +
+                String.join(",",
+                        positionName, institutionName);
+    }
 }
 

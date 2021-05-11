@@ -1,17 +1,43 @@
 import exceptions.EmployerNotFoundException;
-import exceptions.JobNotFoundException;
 import exceptions.StudentNotFoundException;
 import fields.EducationField;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import services.IOService;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws CloneNotSupportedException,
-            EmployerNotFoundException, StudentNotFoundException, JobNotFoundException {
+    public static void main(String[] args) throws IOException {
+
+        IOService<Student> studentIOService = new IOService<>(Student::new);
+
+        List<Student> studentList = studentIOService.retrieveObjects("students.csv");
+
+        Student student = studentList.get(0);
+
+        student.getEducationFields().forEach(System.out::println);
+        student.getExperienceFields().forEach(System.out::println);
+        student.getProjectFields().forEach(System.out::println);
+        student.getInbox().forEach(System.out::println);
+
+        studentIOService.saveObjects("students2.csv", studentList);
+
+    }
+
+    public static void abc(String[] args)
+            throws CloneNotSupportedException, EmployerNotFoundException, StudentNotFoundException {
+
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        fields.TimelineField t = context.getBean("educationField", EducationField.class);
+
+        System.out.println(t.getDescription());
+
+        context.close();
 
         InternshipService service = InternshipService.getInstance();
 

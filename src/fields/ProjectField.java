@@ -18,4 +18,17 @@ public class ProjectField extends TimelineField {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return "ProjectField{" +
+                super.toString() +
+                ", projectName='" + projectName + '\'' +
+                '}';
+    }
+
+    @Override
+    public String convertToCSV() {
+        return super.convertToCSV() + ',' + projectName;
+    }
 }

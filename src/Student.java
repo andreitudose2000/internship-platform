@@ -3,17 +3,20 @@ import exceptions.IncorrectPhoneNumberException;
 import fields.EducationField;
 import fields.ExperienceField;
 import fields.ProjectField;
+import services.CSVConvertible;
+import services.Parsable;
 
 import java.time.YearMonth;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.Collectors;
 
 //Clasa modeleaza un profil de utilizator student care contine
 //campuri atat obligatorii cat si neobligatorii
 //ca sa treaca validarea, cele obligatorii trebuie sa nu fie null
-public class Student implements Observer {
+public class Student implements Observer, Parsable<Student>, CSVConvertible {
     public void updateObserver(String message){
         inbox.add(new InboxMessage(message));
     }
@@ -28,14 +31,11 @@ public class Student implements Observer {
     private String firstName;
     private String lastName;
     private LocalDate birthday;
+    private String email;
 
     //optionale
     private String university;
-    //private File image;
     private String headline;
-    private ArrayList<String> programmingLanugages;
-    private ArrayList<String> foreignLanguages;
-    private ArrayList<String> preferredClasses;
     private Set<EducationField> educationFields = new TreeSet<>();
     private Set<ExperienceField> experienceFields = new TreeSet<>();
     private Set<ProjectField> projectFields = new TreeSet<>();
@@ -61,6 +61,133 @@ public class Student implements Observer {
         job.unsubscribe(this);
     }
 
+    @Override
+    public Student parseCSVLine(String line) {
+
+        String[] fields = line.split(",");
+
+        String firstName = fields[0];
+        String lastName = fields[1];
+        String birthday = fields[2];
+        String email = fields[3];
+
+        Student.ProfileBuilder profileBuilder;
+
+        try {
+            profileBuilder = new ProfileBuilder(firstName, lastName, birthday, email);
+        } catch (IncorrectEmailException incorrectEmailException) {
+            incorrectEmailException.printStackTrace();
+            return null;
+        }
+
+        int noOfEducationFields = Integer.parseInt(fields[4]);
+        int noOfExperienceFields = Integer.parseInt(fields[5]);
+        int noOfProjectFields = Integer.parseInt(fields[6]);
+
+        int noOfInboxMessages = Integer.parseInt(fields[7]);
+
+        int fieldsIndex = 7;
+
+        // pentru fiecare EducationField
+        // fieldsIndex va creste cu 5
+        for(int i = 0; i < noOfEducationFields; i++) {
+
+            String startDateString = fields[++fieldsIndex];
+            YearMonth startDate = YearMonth.parse(startDateString);
+
+            String finishDateString = fields[++fieldsIndex];
+            YearMonth finishDate = YearMonth.parse(finishDateString);
+
+            String description = fields[++fieldsIndex];
+
+            String institutionName = fields[++fieldsIndex];
+
+            String specializationName = fields[++fieldsIndex];
+
+            profileBuilder.addEducationField(startDate, finishDate, description, institutionName, specializationName);
+        }
+
+        // pentru fiecare ExperienceField
+        // fieldsIndex va creste cu 5
+        for (int i = 0; i < noOfExperienceFields; i++) {
+
+            String startDateString = fields[++fieldsIndex];
+            YearMonth startDate = YearMonth.parse(startDateString);
+
+            String finishDateString = fields[++fieldsIndex];
+            YearMonth finishDate = YearMonth.parse(finishDateString);
+
+            String description = fields[++fieldsIndex];
+
+            String positionName = fields[++fieldsIndex];
+
+            String institutionName = fields[++fieldsIndex];
+
+            profileBuilder.addExperienceField(startDate, finishDate, description, positionName, institutionName);
+        }
+
+        for (int i = 0; i < noOfProjectFields; i++) {
+
+            String startDateString = fields[++fieldsIndex];
+            YearMonth startDate = YearMonth.parse(startDateString);
+
+            String finishDateString = fields[++fieldsIndex];
+            YearMonth finishDate = YearMonth.parse(finishDateString);
+
+            String description = fields[++fieldsIndex];
+
+            String projectName = fields[++fieldsIndex];
+
+            profileBuilder.addProjectField(startDate, finishDate, description, projectName);
+        }
+
+        Student student = profileBuilder.build();
+        for (int i = 0; i < noOfInboxMessages; i++) {
+
+            String message = fields[++fieldsIndex];
+
+            String readString = fields[++fieldsIndex];
+            boolean read = Boolean.parseBoolean(readString);
+
+            student.addInboxMessage(new InboxMessage(message, read));
+        }
+
+
+        return student;
+    }
+
+    @Override
+    public String convertToCSV() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String essentials = String.join(",",
+                Arrays.asList(firstName, lastName, birthday.toString(), email, university, headline,
+                        String.valueOf(educationFields.size()),
+                        String.valueOf(experienceFields.size()),
+                        String.valueOf(projectFields.size())
+                            ));
+
+        String educationFieldsJoin = educationFields
+                .stream()
+                .map(EducationField::convertToCSV)
+                .collect(Collectors.joining(","));
+
+        String experienceFieldsJoin = experienceFields
+                .stream()
+                .map(ExperienceField::convertToCSV)
+                .collect(Collectors.joining(","));
+
+        String projectFieldsJoin = projectFields
+                .stream()
+                .map(ProjectField::convertToCSV)
+                .collect(Collectors.joining(","));
+
+        stringBuilder.append(String.join(",",
+                                essentials, educationFieldsJoin, experienceFieldsJoin, projectFieldsJoin));
+
+        return stringBuilder.toString();
+
+    }
+
     static public class ProfileBuilder{
         //obligatorii
         private String firstName;
@@ -80,6 +207,7 @@ public class Student implements Observer {
             this.firstName = student.firstName;
             this.lastName = student.lastName;
             this.birthday = student.birthday;
+            this.email = student.email;
             this.university = student.university;
             this.headline = student.headline;
             this.educationFields = student.educationFields;
@@ -148,7 +276,14 @@ public class Student implements Observer {
         return "Student{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", birthday=" + birthday +
+                ", email='" + email + '\'' +
                 ", university='" + university + '\'' +
+                ", headline='" + headline + '\'' + '\n' +
+                ", educationFields=" + educationFields +
+                ", experienceFields=" + experienceFields +
+                ", projectFields=" + projectFields +
+                ", inbox=" + inbox +
                 '}';
     }
 
@@ -164,6 +299,10 @@ public class Student implements Observer {
         return birthday;
     }
 
+    public void addInboxMessage(InboxMessage inboxMessage) {
+        inbox.add(inboxMessage);
+    }
+
     public void update(Student student) {
         this.firstName = student.firstName;
         this.lastName = student.lastName;
@@ -173,5 +312,23 @@ public class Student implements Observer {
         this.educationFields = student.educationFields;
         this.experienceFields = student.experienceFields;
         this.projectFields = student.projectFields;
+    }
+
+    public Student() { }
+
+    public Set<EducationField> getEducationFields() {
+        return educationFields;
+    }
+
+    public Set<ExperienceField> getExperienceFields() {
+        return experienceFields;
+    }
+
+    public Set<ProjectField> getProjectFields() {
+        return projectFields;
+    }
+
+    public List<InboxMessage> getInbox() {
+        return inbox;
     }
 }
