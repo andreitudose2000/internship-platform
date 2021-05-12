@@ -1,4 +1,6 @@
-public class InboxMessage {
+import services.CSVConvertible;
+
+public class InboxMessage implements CSVConvertible {
 
     final private String message;
     private boolean read;
@@ -27,5 +29,10 @@ public class InboxMessage {
                 "message='" + message + '\'' +
                 ", read=" + read +
                 '}';
+    }
+
+    @Override
+    public String convertToCSV() {
+        return message + ',' + String.valueOf(read);
     }
 }

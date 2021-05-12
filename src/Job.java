@@ -1,8 +1,10 @@
+import services.CSVConvertible;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Job implements Observable, Cloneable {
+public class Job implements Observable, Cloneable, CSVConvertible {
     private boolean jobActive;
     private String jobTitle;
     private int periodInMonths;
@@ -79,8 +81,45 @@ public class Job implements Observable, Cloneable {
         this.notifyProfiles();
     }
 
+    public void addJobRequirement(String requirement) {
+        jobRequirements.add(requirement);
+    }
+
+    public void addJobAttributes(String attribute) {
+        jobAttributes.add(attribute);
+    }
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return (Job) super.clone();
+    }
+
+    @Override
+    public String convertToCSV() {
+        StringBuilder stringBuilder = new StringBuilder(
+                String.join(",",
+                String.valueOf(jobActive),
+                jobTitle,
+                String.valueOf(salary),
+                String.valueOf(periodInMonths),
+                String.valueOf(jobRequirements.size()),
+                String.valueOf(jobAttributes.size())
+                ));
+
+        if (jobRequirements.size() > 0) {
+            stringBuilder.append(',');
+            stringBuilder.append(
+                    String.join(",", jobRequirements)
+            );
+        }
+
+        if (jobAttributes.size() > 0) {
+            stringBuilder.append(',');
+            stringBuilder.append(
+                    String.join(",", jobAttributes)
+            );
+        }
+
+        return stringBuilder.toString();
     }
 }

@@ -153,4 +153,11 @@ public class InternshipService
         student.update(profileBuilder.build());
     }
 
+    public List<Employer> getEmployerList() {
+        return employerList;
+    }
+
+    public List<Student> getStudentList() {
+        return studentList;
+    }
 }

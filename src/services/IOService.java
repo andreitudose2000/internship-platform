@@ -76,8 +76,9 @@ public class IOService<T extends Parsable<T> & CSVConvertible> {
         objectList
                 .stream()
                 .map(CSVConvertible::convertToCSV)
-                .forEach(System.out::println);
+                .forEach(printWriter::println);
 
+        printWriter.close();
     }
 
 

@@ -1,10 +1,12 @@
+import services.CSVConvertible;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Webinar implements Observable, Comparable<Webinar>, Cloneable {
+public class Webinar implements Observable, Comparable<Webinar>, Cloneable, CSVConvertible {
 
     private String name;
     private LocalDate startDate;
@@ -95,5 +97,18 @@ public class Webinar implements Observable, Comparable<Webinar>, Cloneable {
 
     public Object clone()throws CloneNotSupportedException{
         return (Webinar)super.clone();
+    }
+
+    @Override
+    public String convertToCSV() {
+        return String.join(",",
+                name,
+                startDate.toString(),
+                startTime.toString(),
+                finishDate.toString(),
+                finishTime.toString(),
+                platform,
+                String.valueOf(reminderSent),
+                String.valueOf(finished));
     }
 }

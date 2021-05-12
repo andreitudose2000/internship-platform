@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void testStudent(String[] args) throws IOException {
 
         IOService<Student> studentIOService = new IOService<>(Student::new);
 
@@ -18,13 +18,31 @@ public class Main {
 
         Student student = studentList.get(0);
 
-        student.getEducationFields().forEach(System.out::println);
-        student.getExperienceFields().forEach(System.out::println);
-        student.getProjectFields().forEach(System.out::println);
-        student.getInbox().forEach(System.out::println);
+        System.out.println( student.toString() );
 
         studentIOService.saveObjects("students2.csv", studentList);
 
+    }
+
+    public static void main(String[] args)
+            throws CloneNotSupportedException, EmployerNotFoundException, StudentNotFoundException {
+
+
+        InternshipService service = InternshipService.getInstance();
+
+        service.addEmployer("Google");
+
+        service.addJob("Google", "DevOps Intern", 3, 3000);
+        service.addJob("Google", "Java Developer Intern", 3, 3200);
+        service.addJob("Google", "FrontEnd Developer Intern", 3, 2800);
+
+        service.getEmployerList().get(0)
+                .getEmployerJobs().get(0).addJobRequirement("req1");
+
+
+        String test = service.getEmployerList().stream().findFirst().get().convertToCSV();
+
+        System.out.println(test);
     }
 
     public static void abc(String[] args)

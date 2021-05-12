@@ -4,8 +4,11 @@ import fields.EducationField;
 import fields.ExperienceField;
 import fields.ProjectField;
 import services.CSVConvertible;
+import services.Loggable;
+import services.LoggingService;
 import services.Parsable;
 
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -16,7 +19,7 @@ import java.util.stream.Collectors;
 //Clasa modeleaza un profil de utilizator student care contine
 //campuri atat obligatorii cat si neobligatorii
 //ca sa treaca validarea, cele obligatorii trebuie sa nu fie null
-public class Student implements Observer, Parsable<Student>, CSVConvertible {
+public class Student implements Observer, Parsable<Student>, CSVConvertible, Loggable {
     public void updateObserver(String message){
         inbox.add(new InboxMessage(message));
     }
@@ -39,13 +42,15 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
     private Set<EducationField> educationFields = new TreeSet<>();
     private Set<ExperienceField> experienceFields = new TreeSet<>();
     private Set<ProjectField> projectFields = new TreeSet<>();
-
     private List<InboxMessage> inbox = new ArrayList<>();
+
+    LoggingService<Student> loggingService = new LoggingService<>(Student.class);
 
     private Student(ProfileBuilder profileBuilder){
         this.firstName = profileBuilder.firstName;
         this.lastName = profileBuilder.lastName;
         this.birthday = profileBuilder.birthday;
+        this.email = profileBuilder.email;
         this.university = profileBuilder.university;
         this.headline = profileBuilder.headline;
         this.educationFields = profileBuilder.educationFields;
@@ -55,10 +60,12 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
 
     public void applyForJob(Job job) {
         job.subscribe(this);
+        loggingService.logAction("applyForJob", LocalDateTime.now());
     }
 
     public void removeJobApplication(Job job) {
         job.unsubscribe(this);
+        loggingService.logAction("removeJobApplication", LocalDateTime.now());
     }
 
     @Override
@@ -66,10 +73,20 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
 
         String[] fields = line.split(",");
 
-        String firstName = fields[0];
-        String lastName = fields[1];
-        String birthday = fields[2];
-        String email = fields[3];
+        if (line.equals("test")) {
+            Arrays.stream(fields)
+                    .forEach(System.out::println);
+
+
+            return null;
+        }
+
+        int fieldsIndex = 0;
+
+        String firstName = fields[fieldsIndex];
+        String lastName = fields[++fieldsIndex];
+        String birthday = fields[++fieldsIndex];
+        String email = fields[++fieldsIndex];
 
         Student.ProfileBuilder profileBuilder;
 
@@ -80,13 +97,23 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
             return null;
         }
 
-        int noOfEducationFields = Integer.parseInt(fields[4]);
-        int noOfExperienceFields = Integer.parseInt(fields[5]);
-        int noOfProjectFields = Integer.parseInt(fields[6]);
+        String university = fields[++fieldsIndex];
+        String headline = fields[++fieldsIndex];
 
-        int noOfInboxMessages = Integer.parseInt(fields[7]);
+        if (!university.equals("null")) {
+            profileBuilder.setUniversity(university);
+        }
 
-        int fieldsIndex = 7;
+        if (!headline.equals("null")) {
+            profileBuilder.setHeadline(headline);
+        }
+
+        int noOfEducationFields = Integer.parseInt(fields[++fieldsIndex]);
+        int noOfExperienceFields = Integer.parseInt(fields[++fieldsIndex]);
+        int noOfProjectFields = Integer.parseInt(fields[++fieldsIndex]);
+
+        int noOfInboxMessages = Integer.parseInt(fields[++fieldsIndex]);
+        
 
         // pentru fiecare EducationField
         // fieldsIndex va creste cu 5
@@ -163,7 +190,8 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
                 Arrays.asList(firstName, lastName, birthday.toString(), email, university, headline,
                         String.valueOf(educationFields.size()),
                         String.valueOf(experienceFields.size()),
-                        String.valueOf(projectFields.size())
+                        String.valueOf(projectFields.size()),
+                        String.valueOf(inbox.size())
                             ));
 
         String educationFieldsJoin = educationFields
@@ -181,8 +209,13 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
                 .map(ProjectField::convertToCSV)
                 .collect(Collectors.joining(","));
 
+        String inboxJoin = inbox
+                .stream()
+                .map(InboxMessage::convertToCSV)
+                .collect(Collectors.joining(","));
+
         stringBuilder.append(String.join(",",
-                                essentials, educationFieldsJoin, experienceFieldsJoin, projectFieldsJoin));
+                essentials, educationFieldsJoin, experienceFieldsJoin, projectFieldsJoin, inboxJoin));
 
         return stringBuilder.toString();
 
@@ -218,10 +251,12 @@ public class Student implements Observer, Parsable<Student>, CSVConvertible {
         public ProfileBuilder(String firstName, String lastName, String birthday, String email) throws IncorrectEmailException {
             this.firstName = firstName;
             this.lastName = lastName;
+            this.email = email;
             String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
             if (!Pattern.matches(emailRegex, email)) {
                 throw new IncorrectEmailException("Incorrect email: " + email);
             }
+
 
             try {
                 //Locale.setDefault(Locale.FRANCE);
