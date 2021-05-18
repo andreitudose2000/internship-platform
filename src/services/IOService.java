@@ -32,7 +32,7 @@ public class IOService<T extends Parsable<T> & CSVConvertible> {
         }
         return fileReader;
     }
-
+    
     public List<T> retrieveObjects(String fileName) throws IOException {
 
         FileReader fileReader = initReader(fileName);
