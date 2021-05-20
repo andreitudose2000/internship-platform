@@ -116,4 +116,22 @@ public class Queries {
             " WHERE id = ?";
 
 
+    public static final String INSERT_JOB_FOR_EMPLOYER
+            = "INSERT INTO jobs(id, title, period_in_months, salary, employer_id)" +
+            " VALUES(null, ?, ?, ?, ?)";
+
+    public static final String RETRIEVE_JOBS_FOR_EMPLOYER
+            = "SELECT j.id, j.title, j.period_in_months, j.salary" +
+            " FROM internship_platform.jobs j" +
+            " WHERE j.employer_id = ?";
+
+    public static final String UPDATE_JOB_BY_ID
+            = "UPDATE internship_platform.jobs j" +
+            " SET j.title = ?, j.period_in_months = ?, j.salary = ?, j.active = ?" +
+            " WHERE j.id = ?";
+
+    public static final String DELETE_JOB_BY_ID
+            = "DELETE FROM jobs" +
+            " WHERE id = ?";
+
 }

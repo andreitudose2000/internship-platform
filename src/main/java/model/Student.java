@@ -1,6 +1,7 @@
 package model;
 
 import model.fields.*;
+import utils.Loggable;
 
 import java.sql.Date;
 import java.util.*;
@@ -8,7 +9,7 @@ import java.util.*;
 import java.time.LocalDate;
 
 public class Student
-implements Cloneable {
+implements Cloneable, Loggable {
 
     private int id;
 

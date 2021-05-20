@@ -1,6 +1,9 @@
 package model;
 
-public class Job {
+import utils.Loggable;
+
+public class Job
+implements Loggable {
 
     private int id;
     private boolean jobActive;
@@ -9,8 +12,9 @@ public class Job {
     private int salary;
     private int employerId;
 
-    public Job(String jobTitle, int periodInMonths, int salary){
+    public Job(int id, String jobTitle, int periodInMonths, int salary){
         jobActive = true;
+        this.id = id;
         this.jobTitle = jobTitle;
         this.periodInMonths = periodInMonths;
         this.salary = salary;

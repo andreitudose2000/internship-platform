@@ -1,10 +1,13 @@
 package model.fields;
 
 
+import utils.Loggable;
+
 import java.sql.Date;
 import java.time.YearMonth;
 
-public class EducationField extends TimelineField {
+public class EducationField extends TimelineField
+implements Loggable {
 
     private int id;
     private String institutionName;

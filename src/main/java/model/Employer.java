@@ -1,8 +1,11 @@
 package model;
 
+import utils.Loggable;
+
 import java.util.*;
 
-public class Employer {
+public class Employer
+implements Loggable {
 
     private int id;
     private String employerName;

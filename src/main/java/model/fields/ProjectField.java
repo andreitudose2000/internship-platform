@@ -1,9 +1,11 @@
 package model.fields;
 
-import java.sql.Date;
-import java.time.YearMonth;
+import utils.Loggable;
 
-public class ProjectField extends TimelineField {
+import java.sql.Date;
+
+public class ProjectField extends TimelineField
+implements Loggable {
 
     private int id;
     private String projectName;
