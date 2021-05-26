@@ -6,7 +6,7 @@
 * **Job**
 * **JobApplication**
 * **Webinar**
-* **Timeline Field**, cu subtipurile:
+* **Timeline Field**, cu subtipurile: 
   - **EducationField**
   - **ExperienceField**
   - **ProjectField**
