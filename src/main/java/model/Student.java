@@ -38,6 +38,15 @@ implements Cloneable, Loggable {
         this.headline = headline;
     }
 
+    public Student(String firstName, String lastName, Date birthday, String email, String university, String headline) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.email = email;
+        this.university = university;
+        this.headline = headline;
+    }
+
     @Override
     public String toString() {
         return "Student{" +

@@ -8,6 +8,7 @@ import repository.actionsimpl.EmployerRepositoryImpl;
 import repository.actionsimpl.StudentRepositoryImpl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class EmployerService {
 
@@ -22,6 +23,16 @@ public class EmployerService {
     public Employer retrieveEmployerById(int id) {
         employerLoggingService.logAction("readEmployer", LocalDateTime.now());
         return employerRepository.retrieveEmployerById(id);
+    }
+
+    public Employer retrieveEmployerByName(String name) {
+        employerLoggingService.logAction("readEmployer", LocalDateTime.now());
+        return employerRepository.retrieveEmployerByName(name);
+    }
+
+    public List<Employer> retrieveAllEmployers() {
+        employerLoggingService.logAction("readEmployer", LocalDateTime.now());
+        return employerRepository.retrieveAllEmployers();
     }
 
     public void modifyEmployerById(int id, Employer employer) {

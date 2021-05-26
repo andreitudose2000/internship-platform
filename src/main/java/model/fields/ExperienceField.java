@@ -17,6 +17,12 @@ implements Loggable {
         this.positionName = positionName;
         this.institutionName = institutionName;
     }
+
+    public ExperienceField(Date startDate, Date finishDate, String description, String positionName, String institutionName) {
+        super(startDate, finishDate, description);
+        this.positionName = positionName;
+        this.institutionName = institutionName;
+    }
     
     @Override
     public Object clone() throws CloneNotSupportedException {

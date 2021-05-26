@@ -17,9 +17,8 @@ implements Loggable {
         this.employerName = employerName;
     }
 
-    public Employer(String employerName, ArrayList<Job> employerJobs) {
+    public Employer(String employerName) {
         this.employerName = employerName;
-        Collections.copy(this.employerJobs, employerJobs);
     }
 
     @Override

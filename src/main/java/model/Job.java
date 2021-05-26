@@ -12,12 +12,19 @@ implements Loggable {
     private int salary;
     private int employerId;
 
-    public Job(int id, String jobTitle, int periodInMonths, int salary){
-        jobActive = true;
+    public Job(int id, String jobTitle, int periodInMonths, int salary, boolean jobActive){
         this.id = id;
         this.jobTitle = jobTitle;
         this.periodInMonths = periodInMonths;
         this.salary = salary;
+        this.jobActive = jobActive;
+    }
+
+    public Job(String jobTitle, int periodInMonths, int salary, boolean jobActive){
+        this.jobTitle = jobTitle;
+        this.periodInMonths = periodInMonths;
+        this.salary = salary;
+        this.jobActive = jobActive;
     }
 
     @Override
@@ -28,7 +35,8 @@ implements Loggable {
     @Override
     public String toString() {
         return "Job{" +
-                "jobActive=" + jobActive +
+                "id=" + id +
+                ", jobActive=" + jobActive +
                 ", jobTitle='" + jobTitle + '\'' +
                 ", periodInMonths=" + periodInMonths +
                 ", salary=" + salary +

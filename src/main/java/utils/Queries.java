@@ -88,6 +88,11 @@ public class Queries {
             " FROM internship_platform.students s" +
             " WHERE s.id = ?";
 
+    public static final String RETRIEVE_STUDENT_BY_EMAIL
+            = "SELECT s.id, s.first_name, s.last_name, s.birthday, s.email, s.university, s.headline" +
+            " FROM internship_platform.students s" +
+            " WHERE s.email = ?";
+
     public static final String UPDATE_STUDENT_BY_ID
             = "UPDATE internship_platform.students s" +
             " SET s.first_name = ?, s.last_name = ?, s.birthday = ?, s.email = ?, s.university = ?, s.headline = ? " +
@@ -106,6 +111,15 @@ public class Queries {
             " FROM internship_platform.employers e" +
             " WHERE e.id = ?";
 
+    public static final String RETRIEVE_EMPLOYER_BY_NAME
+            = "SELECT e.id, e.name" +
+            " FROM internship_platform.employers e" +
+            " WHERE e.name = ?";
+
+    public static final String RETRIEVE_ALL_EMPLOYERS
+            = "SELECT e.id, e.name" +
+            " FROM internship_platform.employers e";
+
     public static final String UPDATE_EMPLOYER_BY_ID
             = "UPDATE internship_platform.employers e" +
             " SET e.name = ? " +
@@ -117,13 +131,23 @@ public class Queries {
 
 
     public static final String INSERT_JOB_FOR_EMPLOYER
-            = "INSERT INTO jobs(id, title, period_in_months, salary, employer_id)" +
-            " VALUES(null, ?, ?, ?, ?)";
+            = "INSERT INTO jobs(id, title, period_in_months, salary, active, employer_id)" +
+            " VALUES(null, ?, ?, ?, ?, ?)";
 
     public static final String RETRIEVE_JOBS_FOR_EMPLOYER
-            = "SELECT j.id, j.title, j.period_in_months, j.salary" +
+            = "SELECT j.id, j.title, j.period_in_months, j.salary, j.active" +
             " FROM internship_platform.jobs j" +
             " WHERE j.employer_id = ?";
+
+    public static final String RETRIEVE_JOB_BY_ID
+            = "SELECT j.id, j.title, j.period_in_months, j.salary, j.active" +
+            " FROM internship_platform.jobs j" +
+            " WHERE j.id = ?";
+
+    public static final String RETRIEVE_ALL_ACTIVE_JOBS
+            = "SELECT j.id, j.title, j.period_in_months, j.salary, j.active" +
+            " FROM internship_platform.jobs j" +
+            " WHERE j.active = 1";
 
     public static final String UPDATE_JOB_BY_ID
             = "UPDATE internship_platform.jobs j" +
@@ -133,5 +157,18 @@ public class Queries {
     public static final String DELETE_JOB_BY_ID
             = "DELETE FROM jobs" +
             " WHERE id = ?";
+
+    public static final String APPLY_FOR_JOB
+            = "INSERT INTO internship_platform.job_applications" +
+            " VALUES(null, ?, ?)";
+
+    public static final String RETRIVE_JOB_APPLICATIONS_FOR_STUDENT
+            = "SELECT ja.id, ja.student_id, ja.job_id" +
+            " FROM internship_platform.job_applications ja" +
+            " WHERE ja.student_id = ?";
+
+    public static final String REMOVE_JOB_APPLICATION
+            = "DELETE FROM job_applications" +
+            " WHERE student_id = ? AND job_id = ?";
 
 }

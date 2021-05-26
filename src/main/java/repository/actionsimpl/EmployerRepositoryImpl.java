@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static utils.Queries.*;
 
@@ -57,6 +59,51 @@ public class EmployerRepositoryImpl implements EmployerRepository {
             e.printStackTrace();
         }
         return employer;
+    }
+
+    @Override
+    public Employer retrieveEmployerByName(String name) {
+
+        Employer employer = null;
+        try {
+            PreparedStatement preparedStatement
+                    = dbConnection.getDBConnection().prepareStatement(RETRIEVE_EMPLOYER_BY_NAME);
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                employer = new Employer(
+                        resultSet.getInt(1),     // id
+                        resultSet.getString(2)); // name
+            }
+
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employer;
+    }
+
+    @Override
+    public List<Employer> retrieveAllEmployers() {
+
+        List<Employer> employerList = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = dbConnection.getDBConnection()
+                .prepareStatement(RETRIEVE_ALL_EMPLOYERS)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Employer employer = new Employer(resultSet.getInt(1), resultSet.getString(2));
+                employerList.add(employer);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return employerList;
     }
 
     @Override

@@ -20,6 +20,13 @@ implements Loggable {
         this.institutionName = institutionName;
     }
 
+    public EducationField(Date startDate, Date finishDate, String description, String specializationName, String institutionName){
+        super(startDate, finishDate, description);
+        this.specializationName = specializationName;
+        this.institutionName = institutionName;
+    }
+
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

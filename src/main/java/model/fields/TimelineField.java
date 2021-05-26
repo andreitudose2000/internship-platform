@@ -22,6 +22,12 @@ implements Comparable<TimelineField>, Cloneable {
         this.description = description;
     }
 
+    public TimelineField(Date startDate, Date finishDate, String description) {
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.description = description;
+    }
+
     @Override
     public int compareTo(TimelineField o) {
         int comp = this.startDate.compareTo(o.startDate);

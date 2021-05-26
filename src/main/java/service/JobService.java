@@ -18,9 +18,25 @@ public class JobService {
         jobRepository.addJobForEmployer(employer, job);
     }
 
-    public List<Job> retrieveJobsForEmployer(int id) {
+    public List<Job> retrieveJobsForEmployer(int employerId) {
         jobLoggingService.logAction("readJob", LocalDateTime.now());
-        return jobRepository.retrieveJobsForEmployer(id);
+        return jobRepository.retrieveJobsForEmployer(employerId);
+    }
+
+    public Job retrieveJobById(int jobId) {
+        jobLoggingService.logAction("readJob", LocalDateTime.now());
+        return jobRepository.retrieveJobById(jobId);
+    }
+
+    public List<Job> retrieveAllActiveJobs() {
+        jobLoggingService.logAction("readJob", LocalDateTime.now());
+        return jobRepository.retrieveAllActiveJobs();
+    }
+
+    public void setJobInactive(int jobId) {
+        Job job = retrieveJobById(jobId);
+        job.setJobActive(false);
+        modifyJobById(jobId, job);
     }
 
     public void modifyJobById(int id, Job job) {

@@ -16,6 +16,11 @@ implements Loggable {
         this.projectName = projectName;
     }
 
+    public ProjectField(Date startDate, Date finishDate, String description, String projectName) {
+        super(startDate, finishDate, description);
+        this.projectName = projectName;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

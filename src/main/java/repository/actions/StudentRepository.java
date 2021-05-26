@@ -1,5 +1,7 @@
 package repository.actions;
 
+import model.Job;
+import model.JobApplication;
 import model.Student;
 
 import java.util.List;
@@ -17,6 +19,8 @@ public interface StudentRepository {
      */
     Student retrieveStudentById(int studentId);
 
+    Student retrieveStudentByEmail(String email);
+
     /**
      * @param studentId studentId
      * @param student student
@@ -28,4 +32,9 @@ public interface StudentRepository {
      */
     void removeStudentById(int studentId);
 
+    int applyForJob(Student student, Job job);
+
+    List<JobApplication> retrieveJobApplicationsForStudent(Student student);
+
+    void removeJobApplication(Student student, Job job);
 }

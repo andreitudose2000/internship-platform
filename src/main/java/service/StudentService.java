@@ -1,10 +1,13 @@
 package service;
 
+import model.Job;
+import model.JobApplication;
 import model.Student;
 import repository.actions.StudentRepository;
 import repository.actionsimpl.StudentRepositoryImpl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class StudentService {
 
@@ -22,6 +25,10 @@ public class StudentService {
         return studentRepository.retrieveStudentById(id);
     }
 
+    public Student retrieveStudentByEmail(String email) {
+        return studentRepository.retrieveStudentByEmail(email);
+    }
+
     public void modifyStudentById(int id, Student student) {
         studentLoggingService.logAction("updateStudent", LocalDateTime.now());
         studentRepository.modifyStudentById(id, student);
@@ -30,6 +37,21 @@ public class StudentService {
     public void removeStudentById(int id) {
         studentLoggingService.logAction("deleteStudent", LocalDateTime.now());
         studentRepository.removeStudentById(id);
+    }
+
+    public void applyToJob(Student student, Job job) {
+        studentLoggingService.logAction("studentAppliedForJob", LocalDateTime.now());
+        studentRepository.applyForJob(student, job);
+    }
+
+    public List<JobApplication> retrieveJobApplicationsForStudent(Student student) {
+        studentLoggingService.logAction("readJobApplication", LocalDateTime.now());
+        return studentRepository.retrieveJobApplicationsForStudent(student);
+    }
+
+    public void removeJobApplication(Student student, Job job) {
+        studentLoggingService.logAction("removedStudentJobApplication", LocalDateTime.now());
+        studentRepository.removeJobApplication(student, job);
     }
 
     // Singleton
