@@ -1,5 +1,9 @@
+import exception.EmployerNotFoundException;
+import exception.IncorrectEmailException;
+import exception.StudentNotFoundException;
 import model.Employer;
 import model.Job;
+import model.JobApplication;
 import model.Student;
 import model.fields.EducationField;
 import model.fields.ExperienceField;
@@ -9,6 +13,7 @@ import service.*;
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -64,28 +69,27 @@ public class Main {
         System.out.println("Logare in contul de student");
         System.out.println("Introduceti email:");
         String email = scanner.nextLine().strip();
-        Student student = studentService.retrieveStudentByEmail(email);
-
-        if (student == null) {
+        try {
+            Student student = studentService.retrieveStudentByEmail(email);
+            meniuStudent(scanner, student);
+        } catch (StudentNotFoundException e) {
             System.out.println("Userul nu exista in baza de date");
-            return;
+            loginStudent(scanner);
         }
-
-        meniuStudent(scanner, student);
     }
 
     private static void loginEmployer(Scanner scanner) {
         System.out.println("Logare in contul de firma");
         System.out.println("Introduceti numele firmei");
         String employerName = scanner.nextLine().strip();
-        Employer employer = employerService.retrieveEmployerByName(employerName);
-
-        if (employer == null) {
+        try {
+            Employer employer = employerService.retrieveEmployerByName(employerName);
+            meniuEmployer(scanner, employer);
+        } catch(EmployerNotFoundException e) {
             System.out.println("Employerul nu exista in baza de date");
-            return;
         }
 
-        meniuEmployer(scanner, employer);
+
     }
 
     private static void register(Scanner scanner) {
@@ -127,7 +131,12 @@ public class Main {
         String headline = scanner.nextLine().strip();
 
         Student student = new Student(firstName, lastName, birthday, email, university, headline);
-        studentService.addStudent(student);
+        try {
+            studentService.addStudent(student);
+        } catch (IncorrectEmailException e) {
+            System.out.println("Email incorect, incercati din nou");
+            register(scanner);
+        }
         loginStudent(scanner);
     }
 
@@ -154,12 +163,25 @@ public class Main {
                     "5. Vezi toate ofertele active \n" +
                     "6. Aplica la un internship \n" +
                     "7. Vezi la ce internship-uri ai aplicat \n" +
-                    "8. Stergere cont \n" +
+                    "8. Renunta la a aplica la un job \n" +
+                    "9. Stergere cont \n" +
                     "0. Iesire");
             option = scanner.nextLine().strip();
             if (option.equals("x")) {
                 student = studentService.retrieveStudentById(student.getId());
                 System.out.println(student);
+                List<EducationField> educationFieldList
+                        = educationFieldService.retrieveEducationFieldsForStudent(student.getId());
+                List<ExperienceField> experienceFieldList
+                        = experienceFieldService.retrieveExperienceFieldsForStudent(student.getId());
+                List<ProjectField> projectFieldList
+                        = projectFieldService.retrieveProjectFieldsForStudent(student.getId());
+                System.out.println("\nEducatie:");
+                educationFieldList.forEach(System.out::println);
+                System.out.println("\nExperienta:");
+                experienceFieldList.forEach(System.out::println);
+                System.out.println("\nProiecte:");
+                projectFieldList.forEach(System.out::println);
             }
             if (option.equals("1")) {
                 System.out.println("Introduceti data de inceput (AAAA-LL-ZZ)");
@@ -224,7 +246,14 @@ public class Main {
             }
             if (option.equals("4")) {
 
-                employerService.retrieveAllEmployers().forEach(System.out::println);
+                List<Employer> employerList = employerService.retrieveAllEmployers();
+
+                for (Employer employer : employerList) {
+                    List<Job> jobList = jobService.retrieveJobsForEmployer(employer.getId());
+
+                    System.out.println(employer);
+                    jobList.forEach(System.out::println);
+                }
 
                 System.out.println("");
             }
@@ -249,7 +278,14 @@ public class Main {
                 System.out.println("Ati aplicat la urmatoarele internship-uri:");
                 studentService.retrieveJobApplicationsForStudent(student).forEach(System.out::println);
             }
+
             if (option.equals("8")) {
+                System.out.println("Introduceti id-ul jobului la care renuntati:");
+                int jobId = scanner.nextInt();
+                Job job = jobService.retrieveJobById(jobId);
+                studentService.removeJobApplication(student, job);
+            }
+            if (option.equals("9")) {
                 studentService.removeStudentById(student.getId());
                 return;
             }

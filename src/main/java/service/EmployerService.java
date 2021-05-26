@@ -1,5 +1,6 @@
 package service;
 
+import exception.EmployerNotFoundException;
 import model.Employer;
 import model.Student;
 import repository.actions.EmployerRepository;
@@ -25,9 +26,14 @@ public class EmployerService {
         return employerRepository.retrieveEmployerById(id);
     }
 
-    public Employer retrieveEmployerByName(String name) {
+    public Employer retrieveEmployerByName(String name)
+            throws EmployerNotFoundException {
         employerLoggingService.logAction("readEmployer", LocalDateTime.now());
-        return employerRepository.retrieveEmployerByName(name);
+        Employer employer = employerRepository.retrieveEmployerByName(name);
+        if (employer == null) {
+            throw new EmployerNotFoundException("Employerul " + name + " nu exista in baza de date");
+        }
+        return employer;
     }
 
     public List<Employer> retrieveAllEmployers() {

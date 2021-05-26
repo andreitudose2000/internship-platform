@@ -44,7 +44,8 @@ implements Comparable<TimelineField>, Cloneable {
 
     @Override
     public String toString() {
-        return "startDate=" + startDate +
+        return "id=" + id +
+                ", startDate=" + startDate +
                 ", finishDate=" + finishDate +
                 ", description='" + description + '\'';
     }

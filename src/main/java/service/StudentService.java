@@ -1,5 +1,7 @@
 package service;
 
+import exception.IncorrectEmailException;
+import exception.StudentNotFoundException;
 import model.Job;
 import model.JobApplication;
 import model.Student;
@@ -8,6 +10,7 @@ import repository.actionsimpl.StudentRepositoryImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class StudentService {
 
@@ -15,7 +18,11 @@ public class StudentService {
 
     private LoggingService<Student> studentLoggingService = new LoggingService<>(Student.class);
 
-    public void addStudent(Student student) {
+    public void addStudent(Student student)
+            throws IncorrectEmailException {
+        if (!verifyEmail(student.getEmail())) {
+            throw new IncorrectEmailException(student.getEmail());
+        }
         studentLoggingService.logAction("createStudent", LocalDateTime.now());
         studentRepository.addStudent(student);
     }
@@ -25,8 +32,13 @@ public class StudentService {
         return studentRepository.retrieveStudentById(id);
     }
 
-    public Student retrieveStudentByEmail(String email) {
-        return studentRepository.retrieveStudentByEmail(email);
+    public Student retrieveStudentByEmail(String email) throws StudentNotFoundException {
+        studentLoggingService.logAction("readStudent", LocalDateTime.now());
+        Student student = studentRepository.retrieveStudentByEmail(email);
+        if (student == null) {
+            throw new StudentNotFoundException("Emailul " + email + " nu exista in baza de date");
+        }
+        return student;
     }
 
     public void modifyStudentById(int id, Student student) {
@@ -52,6 +64,11 @@ public class StudentService {
     public void removeJobApplication(Student student, Job job) {
         studentLoggingService.logAction("removedStudentJobApplication", LocalDateTime.now());
         studentRepository.removeJobApplication(student, job);
+    }
+
+    public boolean verifyEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
     }
 
     // Singleton
