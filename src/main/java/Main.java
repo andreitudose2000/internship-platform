@@ -1,19 +1,16 @@
 import exception.EmployerNotFoundException;
 import exception.IncorrectEmailException;
 import exception.StudentNotFoundException;
-import model.Employer;
-import model.Job;
-import model.JobApplication;
-import model.Student;
+import model.*;
 import model.fields.EducationField;
 import model.fields.ExperienceField;
 import model.fields.ProjectField;
 import service.*;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 
 public class Main {
@@ -24,15 +21,9 @@ public class Main {
     private final static ExperienceFieldService experienceFieldService = ExperienceFieldService.getINSTANCE();
     private final static ProjectFieldService projectFieldService = ProjectFieldService.getINSTANCE();
     private final static JobService jobService = JobService.getINSTANCE();
+    private final static WebinarService webinarService = WebinarService.getINSTANCE();
 
     public static void main(String[] args) {
-
-//        Employer employer = employerService.retrieveEmployerById(2);
-//        Student student = studentService.retrieveStudentById(1);
-//        List<Job> jobs = jobService.retrieveJobsForEmployer(2);
-
-//        studentService.applyToJob(student, jobs.get(0));
-//        studentService.removeJobApplication(student, jobs.get(0));
 
         Scanner scanner = new Scanner(System.in);
 
@@ -164,7 +155,8 @@ public class Main {
                     "6. Aplica la un internship \n" +
                     "7. Vezi la ce internship-uri ai aplicat \n" +
                     "8. Renunta la a aplica la un job \n" +
-                    "9. Stergere cont \n" +
+                    "9. Vezi webinarele la care poti participa \n" +
+                    "10. Stergere cont \n" +
                     "0. Iesire");
             option = scanner.nextLine().strip();
             if (option.equals("x")) {
@@ -286,6 +278,11 @@ public class Main {
                 studentService.removeJobApplication(student, job);
             }
             if (option.equals("9")) {
+                System.out.println("Webinare de la angajatori:");
+                webinarService.retrieveAllAvailableWebinars().forEach(System.out::println);
+                System.out.println("");
+            }
+            if (option.equals("10")) {
                 studentService.removeStudentById(student.getId());
                 return;
             }
@@ -300,7 +297,11 @@ public class Main {
                     "1. Vezi joburile firmei \n" +
                     "2. Adauga job \n" +
                     "3. Seteaza job inactiv \n" +
-                    "4. Stergere cont \n" +
+                    "4. Sterge job \n" +
+                    "5. Vezi webinarele firmei \n" +
+                    "6. Adauga webinar \n" +
+                    "7. Sterge webinar \n" +
+                    "8. Stergere cont \n" +
                     "0. Iesire");
             option = scanner.nextLine().strip();
             if (option.equals("1")) {
@@ -331,6 +332,43 @@ public class Main {
                 continue;
             }
             if (option.equals("4")) {
+                jobService.retrieveJobsForEmployer(employer.getId()).forEach(System.out::println);
+                System.out.println("Introduceti id-ul jobului pe care vreti sa il stergeti");
+                int jobId = scanner.nextInt();
+                jobService.removeJobById(jobId);
+                continue;
+            }
+            if (option.equals("5")) {
+                List<Webinar> webinarList = webinarService.retrieveWebinarsForEmployer(employer.getId());
+                System.out.println("Webinarele firmei:");
+                webinarList.forEach(System.out::println);
+                continue;
+            }
+            if (option.equals("6")) {
+                System.out.println("Introduceti titlul webinarului");
+                String title = scanner.nextLine().strip();
+
+                System.out.println("Introduceti data");
+                Date startDate = Date.valueOf(scanner.nextLine().strip());
+
+                System.out.println("Introduceti ora");
+                Time startTime = Time.valueOf(scanner.nextLine().strip());
+
+                System.out.println("Introduceti platforma pe care are loc");
+                String platform = scanner.nextLine().strip();
+
+                Webinar webinar = new Webinar(title, startDate, startTime, platform, false, employer.getId());
+                webinarService.addWebinar(employer, webinar);
+                continue;
+            }
+            if (option.equals("7")) {
+                webinarService.retrieveWebinarsForEmployer(employer.getId()).forEach(System.out::println);
+                System.out.println("Introduceti id-ul webinarului pe care vreti sa il stergeti");
+                int webinarId = scanner.nextInt();
+                webinarService.removeWebinarById(webinarId);
+                continue;
+            }
+            if (option.equals("8")) {
                 employerService.removeEmployerById(employer.getId());
                 return;
             }

@@ -1,33 +1,39 @@
 package model;
 
-import java.time.LocalDateTime;
+import utils.Loggable;
+
+import java.sql.Date;
+import java.sql.Time;
 
 public class Webinar
-implements Comparable<Webinar>, Cloneable {
+implements Loggable {
 
     private int id;
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime finishDate;
+    private Date startDate;
+    private Time startTime;
     private String platform;
-    private boolean reminderSent = false;
     private boolean finished = false;
     private int employerId;
 
-    public Webinar(String name, LocalDateTime startDate, LocalDateTime finishDate, String platform) {
+
+    public Webinar(String name, Date startDate, Time startTime, String platform, boolean finished, int employerId) {
         this.name = name;
         this.startDate = startDate;
-        this.finishDate = finishDate;
+        this.startTime = startTime;
         this.platform = platform;
+        this.finished = finished;
+        this.employerId = employerId;
     }
 
-    @Override
-    public int compareTo(Webinar o) {
-        return this.startDate.compareTo(o.startDate);
-    }
-
-    public Object clone()throws CloneNotSupportedException{
-        return (Webinar)super.clone();
+    public Webinar(int id, String name, Date startDate, Time startTime, String platform, boolean finished, int employerId) {
+        this.id = id;
+        this.name = name;
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.platform = platform;
+        this.finished = finished;
+        this.employerId = employerId;
     }
 
     public int getId() {
@@ -46,20 +52,20 @@ implements Comparable<Webinar>, Cloneable {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getFinishDate() {
-        return finishDate;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setFinishDate(LocalDateTime finishDate) {
-        this.finishDate = finishDate;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
     public String getPlatform() {
@@ -68,14 +74,6 @@ implements Comparable<Webinar>, Cloneable {
 
     public void setPlatform(String platform) {
         this.platform = platform;
-    }
-
-    public boolean isReminderSent() {
-        return reminderSent;
-    }
-
-    public void setReminderSent(boolean reminderSent) {
-        this.reminderSent = reminderSent;
     }
 
     public boolean isFinished() {
@@ -92,5 +90,18 @@ implements Comparable<Webinar>, Cloneable {
 
     public void setEmployerId(int employerId) {
         this.employerId = employerId;
+    }
+
+    @Override
+    public String toString() {
+        return "Webinar{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", startDate=" + startDate +
+                ", startTime=" + startTime +
+                ", platform='" + platform + '\'' +
+                ", finished=" + finished +
+                ", employerId=" + employerId +
+                '}';
     }
 }

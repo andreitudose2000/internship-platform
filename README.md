@@ -5,7 +5,7 @@
 * **Employer**
 * **Job**
 * **JobApplication**
-* **Webinar**
+* **model.Webinar**
 * **Timeline Field**, cu subtipurile: 
   - **EducationField**
   - **ExperienceField**

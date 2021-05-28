@@ -171,4 +171,32 @@ public class Queries {
             = "DELETE FROM job_applications" +
             " WHERE student_id = ? AND job_id = ?";
 
+    public static final String INSERT_WEBINAR_FOR_EMPLOYER
+            = "INSERT INTO webinars(id, name, start_date, start_time, platform, finished, employer_id)" +
+            " VALUES(null, ?, ?, ?, ?, ?, ?)";
+
+    public static final String RETRIEVE_WEBINARS_FOR_EMPLOYER
+            = "SELECT w.id, w.name, w.start_date, w.start_time, w.platform, w.finished, w.employer_id" +
+            " FROM internship_platform.webinars w" +
+            " WHERE w.employer_id = ?";
+
+    public static final String RETRIEVE_WEBINAR_BY_ID
+            = "SELECT w.id, w.name, w.start_date, w.start_time, w.platform, w.finished, w.employer_id" +
+            " FROM internship_platform.webinars w" +
+            " WHERE w.id = ?";
+
+    public static final String RETRIEVE_ALL_FUTURE_WEBINARS
+            = "SELECT w.id, w.name, w.start_date, w.start_time, w.platform, w.finished, w.employer_id" +
+            " FROM internship_platform.webinars w" +
+            " WHERE w.finished = 0";
+
+    public static final String UPDATE_WEBINAR_BY_ID
+            = "UPDATE internship_platform.webinars w" +
+            " SET w.name = ?, w.start_date = ?, w.start_time = ?, w.platform = ?, w.finished = ?" +
+            " WHERE w.id = ?";
+
+    public static final String DELETE_WEBINAR_BY_ID
+            = "DELETE FROM webinars" +
+            " WHERE id = ?";
+
 }
